@@ -88,7 +88,9 @@ If the user's servers should be shut down when they logout, set `shutdown_on_log
 
 The SAMLAuthenticator _usually_ attempts to forward users to the SLO URI set in the SAML Metadata. If this is not the desired behavior for whatever reason, set `slo_forward_on_logout` to `False`. This will change the page the user is forwarded to on logout from the page specified in the xml metadata to the standard jupyterhub logout page.
 
-SAMLAuthenticator creates system users by default on successful authentication. If you are running JupyterHub as a non-root user, you may need to turn off this functionality by setting `create_system_users` to `False`.
+The SAMLAuthenticator creates system users by default on successful authentication. If you are running JupyterHub as a non-root user, you may need to turn off this functionality by setting `create_system_users` to `False`.
+
+The default NameIDFormat in the SAML Metadata is `urn:oasis:names:tc:SAML:2.0:nameid-format:transient`, but this can be changed by setting the `nameid_format` value on the SAMLAuthenticator class. Valid values for this field can be found in [the SAML Spec](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)'s section 8.3.
 
 #### Example Configurations
 
@@ -145,6 +147,9 @@ c.SAMLAuthenticator.organization_url = 'https://myorg.com'
 
 # Turn off system user creation on authentication
 c.SAMLAuthenticator.create_system_users = False
+
+# Set the Name Identifier format to "Unspecified"
+c.SAMLAuthenticator.nameid_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
 ```
 
 ## Developing and Contributing

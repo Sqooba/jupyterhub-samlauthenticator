@@ -710,6 +710,24 @@ class TestMakeSPMetadata(unittest.TestCase):
     </Organization>
     
 </EntityDescriptor>'''
+    full_sp_meta_nameid_format_change = '''<?xml version="1.0"?>
+<EntityDescriptor
+        entityID="https://localhost:8000"
+        xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+        xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">
+    <SPSSODescriptor
+            AuthnRequestsSigned="false"
+            protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <NameIDFormat>
+            urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+        </NameIDFormat>
+        <AssertionConsumerService
+                Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                Location="https://localhost:8000/hub/login"/>
+    </SPSSODescriptor>
+    
+</EntityDescriptor>'''
 
     def test_make_org_metadata_no_org_info(self):
         a = SAMLAuthenticator()
@@ -761,6 +779,16 @@ class TestMakeSPMetadata(unittest.TestCase):
         mock_handler_self.request.host = 'localhost:8000'
 
         assert a._make_sp_metadata(mock_handler_self) == self.full_sp_meta_org_name
+
+    def test_set_nameid_format(self):
+        a = SAMLAuthenticator()
+        a.nameid_format = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+
+        mock_handler_self = MagicMock()
+        mock_handler_self.request.protocol = 'https'
+        mock_handler_self.request.host = 'localhost:8000'
+
+        assert a._make_sp_metadata(mock_handler_self) == self.full_sp_meta_nameid_format_change
 
 
 class TestGetHandlers(unittest.TestCase):
